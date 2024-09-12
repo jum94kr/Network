@@ -1,17 +1,5 @@
 # YouTube Application Control
-YouTube (Blocked)
-        |
-     Internet
-        |
-   Router/Switch
-        |
-__________________
-  eth0 (Untrust)
-     UTM/Firewall 
-  eth1 (Trust)
-__________________
-        |
-      Laptop/PC
+[YouTube (Blocked)] - [ Internet ] - Router/Switch - [ (eth0) UTM/Firewall (eth1)] - [ Laptop/PC ]
 
 ## Steps to Implement Application Control to Block YouTube
 ### 1. Assess the Current Network Setup
@@ -26,6 +14,7 @@ application profile 1
  internetmultimedia match youtube all action drop log
 ```
 ### 4. Apply the Application Control Profile to Firewall Policies
+'''
 ip security policy from trust to untrust 30 id 6
  label Youtube Application Control
  source any
@@ -34,5 +23,6 @@ ip security policy from trust to untrust 30 id 6
  snat-profile 10
  action pass log
  enable
+'''
 ### 5. Testing the Block
 ### 6. Monitoring and Logging
