@@ -26,6 +26,8 @@ The client ends the connection.
 
 Therefore, to verify whether DHCP is functioning properly, analyze the traffic on the interface where DHCP is applied, specifically monitoring ports 67 and 68.
 
+## Troubleshooting
+
 You can perform a dump with the following command:
 
 ```
