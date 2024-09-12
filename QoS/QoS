@@ -1,0 +1,70 @@
+!
+hostname QoS_Test
+!
+
+!
+security zone any
+security zone trust
+security zone untrust
+!
+logging
+ console kernel off
+ memory system severity informational
+ memory audit
+ memory session
+ memory application
+ memory ipsec
+ memory anti-ddos
+ memory ips
+ memory anti-spam
+ memory anti-virus
+ memory sslvpn
+ memory userauth
+ file option size 10 alert 7 purge 5
+ file system audit session application ipsec ips sslvpn userauth
+ remote alp 11
+!
+
+!
+interface eth0
+ ip address xxx.xxx.xxx.xxx
+ security-zone untrust
+ no shutdown
+!
+interface eth1
+ ip address 192.168.7.1/24
+ security-zone trust
+ no shutdown
+!
+application profile 1
+ label application_test
+ http default action pass
+ ftp match command upload action pass
+ ftp match command download action pass
+ internetmultimedia match youtube all action pass log
+!
+ip security policy from trust to untrust 20 id 3
+ source 11.11.11.0/24
+ destination 33.33.33.0/24
+ action pass log
+ enable
+!
+ip security policy from trust to untrust 30 id 6
+ label Youtube  
+ source any
+ destination any
+ application-profile 1
+ snat-profile 10
+ action pass log
+ enable
+!
+ip security policy from any to any 10 id 1
+ source any
+ destination any
+ snat-profile 10
+ action pass log
+ enable
+!
+
+end
+
