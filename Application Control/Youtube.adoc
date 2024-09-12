@@ -4,10 +4,10 @@ YouTube (Blocked) - [ Internet ] - Router/Switch - [ (eth0) UTM/Firewall (eth1)]
 
 ## Steps to Implement Application Control to Block YouTube
 ### 1. Assess the Current Network Setup
-   Ensure that the UTM firewall has the Application Control feature enabled
+Ensure that the UTM firewall has the Application Control feature enabled
 
 ### 2. Create an Application Control Profile
-   Create a new Application Control Profile specifically designed for blocking YouTube.
+Create a new Application Control Profile specifically designed for blocking YouTube.
 
 ```
 application profile 1
