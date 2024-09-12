@@ -1,6 +1,53 @@
+# YouTube QoS  #
 
+## Steps to Implement QoS to Block YouTube
+
+### 1. Assess the Current Network Setup
+Ensure that the UTM firewall has the QoS feature enabled
+
+### 2. Create an QoS Profile
+Create a new QoS Profile
+
+```
+!
+qos profile 1
+ label Youtube QoS Test
+ priority 0
+!
+```
+
+
+### 3. Configuring the Application Control Profile
+```
+!
+qos profile 1
+ label Youtube QoS Test
+ restricted source-to-destination 0.01
+ restricted destination-to-source 0.01
+ priority 0
+!
+```
+### 4. Apply the Application Control Profile to Firewall Policies
+
+```
+!
+ip security policy from trust to untrust 30 id 6
+ label Youtube QoS
+ source any
+ destination any
+ application-profile 1
+ snat-profile 10
+ qos-profile 1
+ action pass log
+ enable
+!
+```
+
+### 5. Test Result
 
 Before QoS
+```
+
  bwm
  -         iface                    Rx                   Tx               Total
  ==============================================================================
@@ -8,8 +55,12 @@ Before QoS
             eth1:         663.65 Kb/s        81836.75 Kb/s        82500.40 Kb/s 
  ------------------------------------------------------------------------------
            total:       82495.77 Kb/s        82488.26 Kb/s       164984.02 Kb/s 
+```
+
 
 After QoS
+
+```
  bwm
  \         iface                    Rx                   Tx               Total
  ==============================================================================
@@ -17,3 +68,7 @@ After QoS
             eth1:          35.07 Kb/s          998.78 Kb/s         1033.85 Kb/s 
  ------------------------------------------------------------------------------
            total:        1032.94 Kb/s         1034.85 Kb/s         2067.78 Kb/s 
+```
+
+
+
