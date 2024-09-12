@@ -1,0 +1,556 @@
+!
+hostname AHC_TEST_C
+!
+username change password duration 60
+username axroot privilege 15 password 5 4Dyaw$HK2B3MfZgRuEMTBAevg405xNSaRlQOhLh2Wy2iH8OT9
+!
+clock timezone KST 9 
+!
+config sync manual 
+config sync group ip service time target qos
+config sync signature
+config sync parameters
+config sync aip
+config sync arp-sniff
+config sync policy userauth security nat qos
+config sync admin network
+config sync l2-tunnel
+!
+config full-sync exclude ha
+config full-sync exclude hostname
+config full-sync exclude full-sync
+config full-sync exclude sync
+config full-sync exclude vrrp
+!
+config backup 192.168.7.58 ftp port 21 at 0 path C:\filezilla login test2 password-enc hG+v470hCAiXA6hMyL5LkQ==
+!
+healthcheck threshold 600
+!
+security zone any
+security zone dmz
+security zone dvpn
+security zone trust
+security zone untrust
+!
+logging
+ console kernel off
+ memory system severity informational
+ memory audit
+ memory session
+ memory application
+ memory ipsec
+ memory anti-ddos
+ memory ips
+ memory anti-spam
+ memory anti-virus
+ memory sslvpn
+ memory userauth
+ file option size 10 alert 7 purge 5
+ file system audit session application ipsec ips sslvpn userauth
+ remote alp 11
+!
+statistics log at 01:00:00
+!
+report
+ option top count 10
+ language html korean
+!
+snmp-server trap-size 1024
+!
+arp max-entries 8192
+!
+ip domain-lookup timeout 1 retry 1
+!
+ipv6 neighbor max-entries 1024
+!
+ip igmp max-memberships 20
+!
+interface lo
+ ip address 127.0.0.1/8
+ ip address 11.11.11.11/32 secondary
+!
+interface eth0
+ ip address 10.200.86.25/16
+ security-zone untrust
+ no shutdown
+!
+interface eth1
+ ip address 192.168.7.1/24
+ security-zone trust
+ no shutdown
+!
+interface eth2
+ shutdown
+!
+interface eth3
+ shutdown
+!
+interface eth4
+ shutdown
+!
+interface eth5
+ shutdown
+!
+interface bond0
+ bonding mode balance-rr
+ bonding link-check miimon 1
+ shutdown
+!
+interface dcb1
+ mtu 1438
+ dcube name AHC_TEST_D_CENTER
+ dcube heartbeat interval 1000 threshold 3
+ dcube queue transmit 1024 out-of-order 128
+ dcube proto esp
+ dcube reorder tcp-data udp-small udp-big
+ dcube load-balancing rr
+ dcube transform encrypt
+ dcube key-enc O/hMgNVfAYBud6TE+K8WAg==
+ dcube version 2
+ dcube cseq-ignore
+ dcube ike aes256 sha256 ipsec aes256 sha256
+ dcube source 10.200.86.25
+ ip address 9.9.9.9/24
+ security-zone dvpn
+ no shutdown
+!
+ip route 0.0.0.0/0 10.200.1.1
+ip route 22.22.22.0/24 10.200.1.1
+ip route 33.33.33.0/24 10.200.1.1
+!
+security parameters
+ no offloading
+ software watchdog enable 300
+ control-no3way-timeout
+ session-timeout generic 1800
+ session-timeout icmp 10
+ session-timeout tcp 3600
+ session-timeout udp 60
+ state-timeout tcp syn-sent 120
+ state-timeout tcp syn-recv 60
+ state-timeout tcp no3way-est 60
+ state-timeout tcp fin-wait 120
+ state-timeout tcp close-wait 60
+ state-timeout tcp last-ack 30
+ state-timeout tcp time-wait 120
+ state-timeout tcp reset 3
+ session-limit 500001
+ ha-lifetime-sync interval 30
+ logging firewall
+ logging ipsec
+ logging ips
+ logging application
+ logging sslvpn
+ logging userauth
+ accounting firewall
+ accounting ips
+ accounting ipsec
+ accounting application
+ top-statistics update-time 10
+ top-statistics topn-count 10
+ ike local-id address 10.200.86.25
+ ike remote-id address 10.200.86.23
+ ike remote-id address 10.200.86.24
+ ike local-psk-enc O/hMgNVfAYBud6TE+K8WAg==
+ ike remote-psk-enc O/hMgNVfAYBud6TE+K8WAg==
+ ike proposal encryption aes256 integrity sha256 prf sha256 dh-group 22
+ ike timer rekey 3000 dpd 50
+ ipsec proposal encryption aes256 integrity sha256
+ ipsec lifetime seconds 28800
+ firewall fqdn auto-update hourly
+ qos priority queue length 10
+ qos priority queue restore-time 10000
+ qos priority queue host-lifetime 60
+ nat entry-limit 3000
+ objects node-limit 20000
+ policy node-limit 10000
+ policy rule-limit 100000
+ policy priority interval 3
+ reference update-time 600
+ routing-cache enable
+!
+security policy vulnerability
+ ip-range prefix any severity critical
+ ipv6-range prefix any severity critical
+ service-range port any severity critical
+!
+security signature server 112.216.188.186 port 4433
+security signature file auto
+security signature timeout connection 10 transaction 60
+security signature retry connection 3
+security signature code 30
+!
+mlsoft ipms threshold pnaservice cpu 20 memory 20 duration 60
+mlsoft ipms threshold pnagent cpu 40 memory 20 duration 60
+!
+genians nac threshold sensor cpu 20 memory 20 duration 60
+!
+ddns
+ update-period 600
+!
+service group acmsoda
+ proto tcp sport any dport eq 6969
+!
+service group ats
+ proto tcp sport any dport eq 2201
+!
+service group avt-profile
+ proto tcp sport any dport eq 5004
+!
+service group bgp
+ proto tcp sport any dport eq 179
+!
+service group blp2
+ proto tcp sport any dport eq 8195
+!
+service group bootpc
+ proto udp sport any dport eq 68
+!
+service group bootps
+ proto udp sport any dport eq 67
+!
+service group dcube(default)
+ proto esp
+ proto udp sport any dport eq 7900
+!
+service group dhcpv6-server
+ proto tcp sport any dport eq 547
+!
+service group dns
+ proto tcp sport any dport eq 53
+ proto udp sport any dport eq 53
+!
+service group fodms
+ proto udp sport any dport eq 7200
+!
+service group ftp
+ proto tcp sport any dport eq 21
+!
+service group ftps
+ proto tcp sport any dport eq 990
+!
+service group h263-video
+ proto tcp sport any dport eq 2979
+!
+service group h323gatedisc
+ proto tcp sport any dport eq 1718
+!
+service group h323gatestat
+ proto tcp sport any dport eq 1719
+!
+service group h323hostcall
+ proto tcp sport any dport eq 1720
+!
+service group h323hostcallsc
+ proto tcp sport any dport eq 1300
+!
+service group hostmon
+ proto udp sport any dport eq 5355
+!
+service group hpvipgrp
+ proto tcp sport any dport eq 5223
+!
+service group http
+ proto tcp sport any dport eq 80
+!
+service group https
+ proto tcp sport any dport eq 443
+!
+service group ike
+ proto udp sport any dport eq 500
+!
+service group imap
+ proto tcp sport any dport eq 143
+ proto tcp sport any dport eq 993
+!
+service group imaps
+ proto tcp sport any dport eq 993
+!
+service group kerberos
+ proto tcp sport any dport eq 88
+!
+service group kerberos_v5
+ proto tcp sport any dport eq 464
+!
+service group l2tp
+ proto udp sport any dport eq 1701
+!
+service group ldap
+ proto tcp sport any dport eq 389
+!
+service group ldaps
+ proto tcp sport any dport eq 636
+!
+service group mdns
+ proto udp sport any dport eq 5353
+!
+service group mevent
+ proto tcp sport any dport eq 7900
+!
+service group microsoft-ds
+ proto tcp sport any dport eq 445
+!
+service group mindprintf
+ proto tcp sport any dport eq 8033
+!
+service group mms
+ proto tcp sport any dport eq 1755
+ proto udp sport any dport eq 1755
+!
+service group ms-sql
+ proto udp sport any dport eq 1434
+ proto tcp sport any dport eq 1433
+!
+service group ms-sql-m
+ proto udp sport any dport eq 1434
+!
+service group ms-sql-s
+ proto tcp sport any dport eq 1433
+!
+service group mysql
+ proto tcp sport any dport eq 3306
+!
+service group netbios
+ proto udp sport any dport multi 137 138 139
+!
+service group netbios-dgm
+ proto udp sport any dport eq 138
+!
+service group netbios-ns
+ proto udp sport any dport eq 137
+!
+service group netbios-ssn
+ proto udp sport any dport eq 139
+!
+service group ntp
+ proto udp sport any dport eq 123
+!
+service group oracle
+ proto tcp sport any dport eq 1521
+!
+service group oracle-em2
+ proto tcp sport any dport eq 1754
+!
+service group oracle-vp1
+ proto tcp sport any dport eq 1809
+!
+service group oracle-vp2
+ proto tcp sport any dport eq 1808
+!
+service group pharos
+ proto tcp sport any dport eq 4443
+!
+service group pop3
+ proto tcp sport any dport eq 110
+ proto tcp sport any dport eq 995
+!
+service group pptp
+ proto tcp sport any dport eq 1723
+!
+service group proshare-mc-2
+ proto tcp sport any dport eq 1674
+!
+service group radius-account
+ proto tcp sport any dport eq 1813
+!
+service group radius-auth
+ proto tcp sport any dport eq 1812
+!
+service group regacy_radius
+ proto tcp sport any dport multi 1645 1646
+!
+service group rsync
+ proto tcp sport any dport eq 873
+!
+service group rtsp
+ proto tcp sport any dport eq 554
+!
+service group sabams
+ proto tcp sport any dport eq 2760
+!
+service group sftp
+ proto tcp sport any dport eq 115
+!
+service group smtp
+ proto tcp sport any dport eq 25
+!
+service group smtps
+ proto tcp sport any dport eq 465
+!
+service group snapp
+ proto tcp sport any dport eq 2333
+!
+service group snmp
+ proto udp sport any dport eq 161
+!
+service group snmptrap
+ proto udp sport any dport eq 162
+!
+service group ssdp
+ proto udp sport any dport eq 1900
+!
+service group ssh
+ proto tcp sport any dport eq 22
+!
+service group stun
+ proto udp sport any dport eq 3478
+!
+service group syslog
+ proto udp sport any dport eq 514
+!
+service group tcslap
+ proto tcp sport any dport eq 2869
+!
+service group telnet
+ proto tcp sport any dport eq 23
+!
+service group teradataordbms
+ proto tcp sport any dport eq 8002
+!
+service group teredo
+ proto udp sport any dport eq 3544
+!
+service group tftp-mcast
+ proto tcp sport any dport eq 1758
+!
+service group unicall
+ proto tcp sport any dport eq 4343
+!
+service group vcom-tunnel
+ proto tcp sport any dport eq 8001
+!
+service group webcache
+ proto tcp sport any dport eq 8080
+!
+service group www
+ proto tcp sport any dport eq 80
+ proto tcp sport any dport eq 443
+!
+service group www-ldap-gw
+ proto tcp sport any dport eq 1760
+!
+service group x11-ssh-offset
+ proto tcp sport any dport eq 6010
+!
+service group xmpp-client
+ proto tcp sport any dport eq 5222
+!
+password policy admin
+ length 9 16
+ character-count upper 1 lower 1 digit 1 special 1
+ impossible sequential-count asc 3 same 3 qwerty-right 3
+ impossible contain-word id password 6
+!
+password policy user
+ length 9 16
+ character-count english 1 digit 1 special 1
+!
+userauth factor ip
+userauth expire-timeout 8 connection-timeout 5
+userauth max-connections 1
+userauth multi-auth timeout 180 retry 3
+!
+ip snat profile 10
+ source any destination any dynamic auto prio 1
+!
+ips profile 10
+ tcp-reassembly
+!
+ips enable
+!
+application http option url-cache 10000
+!
+application profile 1
+ label application_test
+ http default action pass
+ ftp match command upload action pass
+ ftp match command download action pass
+ internetmultimedia match youtube all action pass log
+!
+ip ipsec profile 20
+ label branch23
+ ike version 2 mobike
+ ike local-id address 10.200.86.25
+ ike remote-id address 10.200.86.23
+ local-address zone untrust 10.200.86.25
+ remote-address zone untrust 10.200.86.23
+ local-subnet 11.11.11.0/24
+ remote-subnet 22.22.22.0/24
+ ipsec proto esp mode tunnel
+ ipsec setup ike
+!
+ip ipsec profile 30
+ label branch24
+ ike version 2 mobike
+ ike local-id address 10.200.86.25
+ ike remote-id address 10.200.86.24
+ local-address zone untrust 10.200.86.25
+ remote-address zone untrust 10.200.86.24
+ local-subnet 11.11.11.0/24
+ remote-subnet 33.33.33.0/24
+ ipsec proto esp mode tunnel
+ ipsec setup ike
+!
+security policy index 6
+!
+ip security policy from trust to untrust 10 id 2
+ source 11.11.11.0/24
+ destination 22.22.22.0/24
+ ipsec-profile 20
+ tcp-mss 1300
+ action pass log
+ enable
+!
+ip security policy from trust to untrust 20 id 3
+ source 11.11.11.0/24
+ destination 33.33.33.0/24
+ ipsec-profile 30
+ tcp-mss 1300
+ action pass log
+ enable
+!
+ip security policy from trust to untrust 30 id 6
+ label Youtube Application Control
+ source any
+ destination any
+ application-profile 1
+ snat-profile 10
+ action pass log
+ enable
+!
+ip security policy from untrust to trust 10 id 4
+ source 22.22.22.0/24
+ destination 11.11.11.0/24
+ ipsec-profile 20
+ tcp-mss 1300
+ action pass log
+ enable
+!
+ip security policy from untrust to trust 20 id 5
+ source 33.33.33.0/24
+ destination 11.11.11.0/24
+ ipsec-profile 30
+ tcp-mss 1300
+ action pass log
+ enable
+!
+ip security policy from any to any 10 id 1
+ source any
+ destination any
+ snat-profile 10
+ action pass log
+ enable
+!
+vrrp vmac disable
+!
+line vty
+ exec-timeout 0 0
+ ssh port 2222
+ http secure-port 4433
+ http timeout 0 0
+ login server request-condition auth-fail
+ login server priority local
+ login server privilege default monitor
+!
+end
+
