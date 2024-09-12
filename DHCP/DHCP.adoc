@@ -1,0 +1,35 @@
+# How DHCP Works
+
+#### 1. DHCP-DISCOVER 
+
+Client: The client searches for a DHCP server and requests an IP address assignment.
+
+#### 2. DHCP-OFFER 
+
+Server: The server offers a candidate IP address.
+
+#### 3. DHCP-REQUEST
+
+Client: The client requests to use the IP address that was offered, or requests an extension of the IP address lease time.
+
+#### 4. DHCP-ACK
+
+Server: The server accepts the client's request.
+
+#### 5. DHCP-Release
+
+The client ends the connection.
+
+## DHCP uses UDP ports 67 and 68.
+67 is the server port.
+68 is the client port.
+
+Therefore, to verify whether DHCP is functioning properly, analyze the traffic on the interface where DHCP is applied, specifically monitoring ports 67 and 68.
+
+You can perform a dump with the following command:
+
+```
+tcpdump -i (interface) port 67 or 68 -vvvv
+```
+
+Check the dump for Discover, Offer, Request, and Ack. If any are missing, check at which point the process stops to determine whether the issue is with the client or the server.
