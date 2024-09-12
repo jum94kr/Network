@@ -37,8 +37,16 @@ ip security policy from trust to untrust 30 id 6
 
 ### 5. Testing the Block
 
+Drop Log
+
 ```
 internetmultimedia      youtube     acl    drop    1    0   6   to-dst  multimedia_Youtube domain access
+```
+
+Pass Log
+
+```
+ internetmultimedia     youtube     acl      pass   1    0   6   to-src  multimedia_Youtube domain access
 ```
 
 ### 6. Monitoring and Logging
